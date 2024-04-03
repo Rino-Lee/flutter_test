@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_jjigmuck/mvvm/model/local/user_schema.dart';
 import 'package:flutter_jjigmuck/mvvm/view/user_search_result_page.dart';
 import 'package:flutter_jjigmuck/mvvm/view_model/user_search_view_model.dart';
 import 'package:provider/provider.dart';
@@ -19,14 +20,10 @@ class UserSearch extends HookWidget {
     }
 
     useEffect(
-            () =>
-            () {
-          _redirect();
-        },
-        [context
-            .watch<UserViewModel>()
-            .user
-        ]);
+        () => () {
+              _redirect();
+            },
+        [context.watch<UserViewModel>().user]);
     return Scaffold(
         appBar: AppBar(
           title: Text("get user information at github"),
@@ -45,29 +42,61 @@ class UserSearch extends HookWidget {
                     child: TextField(
                       controller: userNameController,
                     )),
-                Padding(padding: EdgeInsets.all(10), child:
+                Expanded(
+                    child: FutureBuilder(
+                        future: context
+                            .read<UserViewModel>()
+                            .getFrequencySearchUserList(),
+                        builder:
+                            (BuildContext context, AsyncSnapshot snapshot) {
+                          if (snapshot.hasError) {
+                            return Text("${snapshot.error}");
+                          } else if (snapshot.hasData) {
+                            final List<UserModel> frequencySearchedUser =
+                                snapshot.data;
+
+                            return ListView.builder(
+                              itemCount: frequencySearchedUser.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                InkWell(
+                                    onTap: () {
+                                      context
+                                          .read<UserViewModel>()
+                                          .deleteUser(frequencySearchedUser[index]);
+                                    },
+                                    child: Text(
+                                        '${frequencySearchedUser[index].login}', style: TextStyle(backgroundColor: Colors.black),));
+                                return null;
+                              },
+                            );
+                          } else
+                            return Placeholder();
+                        })),
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: ElevatedButton(
+                      onPressed: () async {
+                        final viewModel = context.read<UserViewModel>();
+                        if (userNameController.text == viewModel.user.login) {
+                          _redirect();
+                        } else {
+                          viewModel.getUser(userNameController.text);
+                        }
+                      },
+                      child: Text("검색")),
+                ),
                 ElevatedButton(
                     onPressed: () async {
-                      final viewModel = context.read<UserViewModel>();
-                      if (userNameController.text == viewModel.user.login) {
-                        _redirect();
-                      } else {
-                        viewModel.getUser(userNameController.text);
-                      }
+                      context
+                          .read<UserViewModel>()
+                          .getFrequencySearchUserList();
                     },
-                    child: Text("최근 검색 기록 보기")),),
-
-                Padding(padding: EdgeInsets.all(10), child: ElevatedButton(
+                    child: Text("최근 검색")),
+                ElevatedButton(
                     onPressed: () async {
-                      final viewModel = context.read<UserViewModel>();
-                      if (userNameController.text == viewModel.user.login) {
-                        _redirect();
-                      } else {
-                        viewModel.getUser(userNameController.text);
-                      }
+                      context.read<UserViewModel>().deleteAll();
                     },
-                    child: Text("검색")),)
-
+                    child: Text("모두 제거"))
               ],
             ),
           );

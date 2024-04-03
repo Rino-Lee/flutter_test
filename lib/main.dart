@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_jjigmuck/mvvm/view/user_search_page.dart';
 import 'package:flutter_jjigmuck/mvvm/view_model/user_search_view_model.dart';
 import 'package:provider/provider.dart';
-import 'package:realm/realm.dart';
 
 void main() {
+  // sqflite
+  // sqfliteFfiInit();
+  // if(Platform.isAndroid || Platform.isIOS) {
+  //   databaseFactory = databaseFactoryFfi;
+  // }
   runApp(const MyApp());
 }
 
@@ -25,7 +29,6 @@ class MyApp extends StatelessWidget {
     //   ],
     //   child: MaterialApp(title: 'Flutter Provider', home: MultiProviderPage())
     // );
-    var config = Configuration.local([UserSchema.schema]);
     return ChangeNotifierProvider(
       create: (context) => UserViewModel(),
       child: MaterialApp(

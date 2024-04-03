@@ -20,6 +20,10 @@ dependencies:
   build_runner: ^2.4.8
   realm: ^2.0.0
   json_annotation: ^4.6.0
+  sqflite: ^2.3.2
+  sqflite_common_ffi:
+  path: ^1.9.0
+  fluttertoast: ^8.2.4
 
 dev_dependencies:
   flutter_test:
