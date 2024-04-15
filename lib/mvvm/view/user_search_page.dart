@@ -23,7 +23,7 @@ class UserSearch extends HookWidget {
         () => () {
               _redirect();
             },
-        [context.watch<UserViewModel>().user]);
+        [context.watch<UserViewModel>().retrofitUser]);
     return Scaffold(
         appBar: AppBar(
           title: Text("get user information at github"),
@@ -77,10 +77,10 @@ class UserSearch extends HookWidget {
                   child: ElevatedButton(
                       onPressed: () async {
                         final viewModel = context.read<UserViewModel>();
-                        if (userNameController.text == viewModel.user.login) {
+                        if (userNameController.text == viewModel.retrofitUser?.login) {
                           _redirect();
                         } else {
-                          viewModel.getUser(userNameController.text);
+                          viewModel.getUserGenerated(userNameController.text);
                         }
                       },
                       child: Text("검색")),

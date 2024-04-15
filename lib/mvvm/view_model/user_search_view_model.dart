@@ -1,23 +1,33 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_jjigmuck/mvvm/model/local/user_schema.dart';
-import 'package:flutter_jjigmuck/mvvm/model/remote/user.dart';
 import 'package:flutter_jjigmuck/mvvm/repository/user_repository.dart';
+
+import '../model/remote/remote_user_service_retrofit.dart';
+import '../model/remote/user.dart';
 
 class UserViewModel extends ChangeNotifier {
   late final UserRepository _userRepository;
 
   bool isDataFetching = true;
 
-  UserDTO _user = UserDTO();
+  GeneratedUserDTO? _retrofitUser;
+  GeneratedUserDTO? get retrofitUser => _retrofitUser;
 
-  UserDTO get user => _user;
+  UserDTO? _user;
+  UserDTO? get user => _user;
 
   UserViewModel() {
     _userRepository = UserRepository();
   }
 
+  Future<void> getUserGenerated(String userName) async {
+    _retrofitUser = await _userRepository.getUserInfo(userName);
+    notifyListeners();
+  }
+
   Future<void> getUser(String userName) async {
-    _user = await _userRepository.getUserInfo(userName);
+    final _response = await _userRepository.getUser(userName);
+    _user = _response;
     notifyListeners();
   }
 

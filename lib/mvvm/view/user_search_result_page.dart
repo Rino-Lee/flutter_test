@@ -15,12 +15,12 @@ class UserSearchResultPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Text("${context.watch<UserViewModel>().user.login}"),
-                        Text("${context.watch<UserViewModel>().user.name}"),
+                        Text("${context.watch<UserViewModel>().retrofitUser?.login}"),
+                        Text("${context.watch<UserViewModel>().retrofitUser?.name}"),
                         ClipOval(
                           child: SizedBox.fromSize(
                             child: Image.network(
-                                "${context.watch<UserViewModel>().user.avatar_url}",
+                                "${context.watch<UserViewModel>().retrofitUser?.avatar_url}",
                                 fit: BoxFit.cover),
                           ),
                         ),
